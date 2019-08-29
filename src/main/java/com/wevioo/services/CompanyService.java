@@ -15,7 +15,7 @@ public class CompanyService {
 
 	@Autowired
 	LinkedinProfileRepository linkedinProfileRepository;
-	
+
 	@Autowired
 	CompanyRepository companyRepository;
 
@@ -26,18 +26,21 @@ public class CompanyService {
 		linkedinProfileRepository.findAll().stream().forEach(e -> {
 
 			e.getExperience().getJobs().stream().forEach(x -> {
-				CompanyDTO company = new CompanyDTO(x.getCompany(), x.getCompanyUrl(), false, null);
-				companies.add(company);
+
+				// to check if the company is already in the Companies collection
+				if (companyRepository.findOneByName(x.getCompany()) == null) {
+					CompanyDTO company = new CompanyDTO(x.getCompany(), x.getCompanyUrl(), false, null);
+					companies.add(company);
+				}
 			});
 		});
 
 		return companies;
 
 	}
-	
-	
+
 	public void insertCompaniesToMongo(Set<CompanyDTO> listCompanies) {
-		
+
 		companyRepository.saveAll(listCompanies);
 	}
 
